@@ -1,0 +1,30 @@
+procedure
+  Ident Simple
+  :
+    Ident a
+    Ident A
+    Ident r5i8
+    INTEGER
+  :
+    Ident BQ
+    Ident c_2
+    BOOLEAN
+  :=
+    Ident A
+    IntConst 34
+  :=
+    Ident r5i8
+    /
+      +
+        Ident A
+        IntConst 23
+      *
+        Ident A
+        IntConst 4
+  :=
+    Ident BQ
+    >=
+      Ident r5i8
+      +
+        Ident a
+        IntConst 1

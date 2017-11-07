@@ -1,0 +1,109 @@
+procedure
+  Ident Simple
+  :
+    Ident a
+    Ident A
+    Ident r5i8
+    INTEGER
+  :
+    Ident BQ
+    BOOLEAN
+  :
+    Ident Z
+    Ident e3
+    array
+      ..
+        IntConst 1
+        IntConst 4
+      INTEGER
+  :=
+    Ident A
+    IntConst 34
+  :=
+    Ident a
+    IntConst 1
+  :=
+    Ident r5i8
+    /
+      +
+        Ident A
+        IntConst 23
+      *
+        Ident A
+        IntConst 4
+  for
+    Ident I
+    ..
+      -
+        Ident a
+        IntConst 1
+      +
+        Ident A
+        IntConst 2
+    if
+      <
+        -
+          Ident A
+          Ident a
+        IntConst 0
+      :=
+        Ident BQ
+        >=
+          Ident r5i8
+          +
+            Ident a
+            IntConst 1
+      if
+        >=
+          Ident r5i8
+          +
+            Ident A
+            Ident a
+        :=
+          Ident a
+          -
+            [
+              Ident Z
+              IntConst 3
+            IntConst 12
+        exit
+          >
+            Ident a_3
+            IntConst 100
+        :=
+          Ident r5i8
+          /
+            /
+              *
+                -
+                  Ident A
+                  *
+                    IntConst 45
+                    Ident r5i8
+                -
+                  +
+                    Ident a
+                    Ident A
+                  IntConst 2
+              -
+                Ident r5i8
+                IntConst 2
+            IntConst 5
+    :=
+      [
+        Ident e3
+        Ident I
+      *
+        [
+          Ident Z
+          -
+            *
+              IntConst 2
+              Ident I
+            IntConst 3
+        IntConst 23
+  :=
+    Ident a
+    +
+      Ident A
+      Ident r5i8
