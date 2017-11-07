@@ -4,7 +4,7 @@ typedef struct Node {
 } node;
 typedef node	*tree;
 
-extern char TokName[][12];
+extern char TokName[][13];
 
 tree buildTree (int kind, tree first, tree second, tree third);
 tree buildIntTree (int kind, int val);
