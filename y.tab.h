@@ -1,7 +1,7 @@
 extern char *yytext;
 int yylex(void);
 
-#define Identifier 1
+#define Ident 1
 #define IntConst 2
 #define RealConst 3
 #define FloatingPoint 4
@@ -37,10 +37,11 @@ int yylex(void);
 #define Mod 31
 #define Colon 32
 #define Definition 33
-#define LesserThan 34
-#define GreaterThan 35
-#define LesserThanOrEqual 36
-#define GreaterThanOrEqual 37
+
+#define LessThan 34
+#define GreatThan 35
+#define LTOE 36
+#define GTOE 37
 #define Period 38
 #define Comma 39
 #define Assign 40

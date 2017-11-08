@@ -9,9 +9,3 @@ extern char TokName[][13];
 tree buildTree (int kind, tree first, tree second, tree third);
 tree buildIntTree (int kind, int val);
 void printTree (tree);
-
-/*
-void check (tree);
-
-void gen_program (tree);
-*/

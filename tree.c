@@ -25,12 +25,11 @@ tree buildIntTree (int kind, int val)
 }
 
 char TokName[][13] = 
-	{"<eof>", "",  
-	"Ident", "IntConst", "RealConst", "FloatingPoint", "FloatExponent",
+	{"", "Ident", "IntConst", "RealConst", "FloatingPoint", "FloatExponent",
 	"Var", "Int", "Real", "Boolean", "Record", "While", "Do", "End", "Begin",
 	"Loop", "Exit", "Bind", "To", "Assert", "When", "If", "Then", "Elsif", "Else",
 	"Put", "Or", "And", "Not", "NotEqual", "Div", "Mod", "Colon", "Definition",
-	"LesserThan", "GreaterThan", "LesserThanOrEqual", "GreaterThanOrEqual", 
+	"LessThan", "GreatThan", "LTOE", "GTOE", 
 	"Period", "Comma", "Assign", "Plus", "Minus", "Star", "Divide", "Semicolon",
 	"LeftPar", "RightPar", "<Prog>", "<Notype>", "Field"};
 static int indent = 0;
@@ -41,13 +40,13 @@ void printTree (tree p)
 		printf ("%*s%s", indent, "", TokName[p->kind]);
 		switch (p->kind) {
 			case Ident: 
-				printf ("  %s (%d)\n", id_name (p->value), p->value);
+				printf ("  %s 	\n", p->value);
 				break;
 			case IntConst:
-				printf ("  %d\n", p->value);
+				printf ("  %d 	\n", p->value);
 				break;
 			case RealConst:
-				printf (" %s\n", p->value);
+				printf (" %s 	\n", p->value);
 				break;
 			default:
 				printf ("\n");
