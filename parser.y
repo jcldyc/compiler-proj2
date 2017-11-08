@@ -1,42 +1,48 @@
 %{
 #include <stdlib.h>
+#include <stdbool.h>
 #include "tree.h"
 
 extern tree root;
 %}
  
-%union { tree p; int i; }
+%union { tree p; int i; float f; char* string;}
  
 %start program
-%token Ident 1 IntConst 2 RealConst 3 FloatingPoint 4 FloatExponent 5
-%token Var 11 Int 12 Real 13 Boolean 14
-%token Record 21 While 22 Do 23 End 24 Begin 25 Loop 26 Exit 27
-%token Bind 31 To 32 Assert 33
-%token When 41 If 42 Then 53 Elsif 44 Else 45 Put 46
-%token Or 51 And 52 Not 53 NotEqual 54 Div 55 Mod 56
-%token Colon 61 Definition 62
-%token LessThan 63 GreaterThan 64 LessThanEq 65 GreaterThanEq 66
-%token Dot 67 Comma 68
-%token Assign 71 Plus 72 Minus 73 Star 74 Slash 75 Semicolon 76 LPar 77 RPar 78
-%token Prog 80
+%token <i> Ident 1 IntConst 2 RealConst 3
+
+%token <f> FloatingPoint 4 FloatExponent 5
+
+%token Var 6 Int 7 Real 8 Boolean 9 Record 10 While 11
+
+%token Do 12 End 13 Begin 14 Loop 15 Exit 16 Bind 17 To 18
+
+%token Assert 19 When 20 If 21 Then 22 Elsif 23 Else 24
+
+%token Put 25 Or 26 And 27 Not 28 NotEqual 29 
+
+%token Div 30 Mod 31 Colon 32 Definition 33
+
+%token LesserThan 34 GreaterThan35 LesserThanOrEqual 36 GreaterThanOrEqual 37
+
+%token Period 38 Comma 39 Assign 40 Plus 41 Minus 42 Multiply 43 Divide 44
+
+%token Semicolon 45 LeftPar 46 RightPar 47 Prog 48 NoType 49 Field 50
+
  
-%type <t> pStateDeclSeq idlist type field_list state_decls declaration statement ref end expr and_expr not_expr rel_expr sum prod factor basic
+%type <p> pStateDeclSeq idlist type field_list state_decls declaration statement ref end expr and_expr not_expr rel_expr sum prod factor basic
+
 
 %%
  
-
-
-
-
-
-program:		| pStateDeclSeq
+program:		 pStateDeclSeq
 					{ root = buildTree (Prog, $1, NULL, NULL); }
 
-pStateDeclSeq: 	| ""
+pStateDeclSeq: 	 /* empty */
 					{$$ = NULL;}
 				| statement ";" pStateDeclSeq
 					{$$ = buildTree(Semicolon, $1, NULL, NULL); $$->next = $3}
-				| "var" idlist ":" type ";" pStateDeclSeq
+				| "var" idlist Colon type Semicolon pStateDeclSeq
 					{$$ = buildTree(Var, $2, $4, NULL); $$->next = $6;}
 				;
 
@@ -44,130 +50,129 @@ pStateDeclSeq: 	| ""
 
 idlist: 		Ident 
 					{$$ = buildIntTree(Ident, $1);}
-				| Ident "," idlist
+				| Ident Comma idlist
 					{$$ = buildIntTree(Ident, $1); $$->next = $3;}
 
-type: 			| "int"
+type: 			Int
 					{$$ = buildTree(Int, 0);}
-				| "real"
+				| Real
 					{$$ = buildTree(Real, 0);}
-				| "boolean"
-					{$$ = buildTree(Boolean, 0);}
-				| "record" field_list "end" "record"
+				| Boolean					{$$ = buildTree(Boolean, 0);}
+				| Record field_list End Record
 					{$$ = buildTree(Record, $2, NULL, NULL);}
 				;
 
-field_list: 	idlist ":" type
+field_list: 	idlist Colon type
 					{$$ = buildTree(Colon, $1, $3, NULL);}
-				| idlist ":" type ";" field_list
-					{$$ = buildTree(Colon, $1, buildTree(SemiColon, $3), NULL); $$->next = $5;}
+				| idlist Colon type Semicolon field_list
+					{$$ = buildTree(Colon, $1, buildTree(Semicolon, $3), NULL); $$->next = $5;}
 				;
 
-state_decls: 	""
+state_decls: 	/* empty */
 					{$$ = NULL;}
-				| statement ";" pStateDeclSeq
+				| statement Semicolon pStateDeclSeq
 					{$$ = buildTree(Semicolon, $1, $3, NULL);}
-				| declaration ";" pStateDeclSeq
+				| declaration Semicolon pStateDeclSeq
 					{$$ = buildTree(Semicolon, $1, $3, NULL);}
 				;
 
-declaration: 	"var" idlist ":" type
+declaration: 	var idlist Colon type
 					{$$ = buildTree(Var, $2, $4, NULL);}
-				| "bind" idlist "to" ref
+				| Bind idlist To ref
 					{$$ = buildTree(Bind, buildTree(Ident, $2), $4, NULL);}
-				| "bind" "var" idlist "to" ref
+				| Bind Var idlist To ref
 					{$$ = buildTree(Bind, buildTree(Ident, $3), $5);}
 				;
 
-statement: 	 	ref ":=" expr
+statement: 	 	ref Definition expr
 					{$$ = buildTree(Definition, $1, $3, NULL);}
 
-				| "assert" bool_expr
+				| Assert bool_expr
 					{$$ = buildTree(Assert, $2, NULL, NULL);}
 
-				| "begin" state_decls "end"
+				| Begin state_decls End
 					{$$ = buildTree(Begin, $2, NULL, NULL);}
-				| "loop" state_decls "end" "loop"
+				| Loop state_decls End Loop
 					{$$ = buildTree(Loop, $2, NULL, NULL);}
-				| "exit" 
+				| Exit 
 					{}
-				| "exit" "when" bool_expr
+				| Exit When bool_expr
 					{$$ = buildTree(Exit, $3, NULL, NULL);}
-				| "if" bool_expr "then" state_decls end_if
+				| If bool_expr Then state_decls end_if
 					{$$ = buildTree(If, $2, $4, NULL);}
 				;
 
 ref: 			Ident
 					{$$ = buildIntTree(Ident, $1);}
-				| Ident "." Ident
+				| Ident Period Ident
 					{$$ = buildTree(Dot, buildTree(Ident, $1), buildTree(Ident, $3), NULL);}
 				;
 
-end_if: 		"end" "if"
+end_if: 		End If
 					{}
-				| "else" state_decls "end" "if"
+				| Else state_decls End If
 					{$$ = buildTree(Else,$2,NULL,NULL);}
-				| "elsif" bool_expr "then" state_decls end_if
+				| Elsif bool_expr Then state_decls end_if
 					{$$ = buildTree(Elsif, $3, $5, NULL); $$->next = $6;}
 				;
 
-expr: 			expr "or" and_expr
+expr: 			expr Or and_expr
 					{$$ = buildTree(Or, $1, $3, NULL);} 
 				| and_expr
 					{$$ = $1}
 				;
 
-and_expr: 		and_expr "and" not_expr 
+and_expr: 		and_expr And not_expr 
 					{$$ = buildTree(And, $1, $3, NULL)}
 				| not_expr
 					{$$ = $1}
 				;
 
-not_expr: 		"not" not_expr 
+not_expr: 		Not not_expr 
 					{$$ = buildTree(Not, $2, NULL, NULL)}
 				| rel_expr
 					{$$ = $1}
 				;
 
-rel_expr: 		sum 
+rel_expr: 		Sum 
 					{$$ = $1;}
-				| rel_expr "=" sum 
+				| rel_expr Assign sum 
 					{$$ = buildTree(Assign, $1 ,$3, NULL);}
-				| rel_expr "not=" sum
+				| rel_expr Not= sum
 					{$$ = buildTree(NotEqual, $1 ,$3, NULL);}
-				| rel_expr "<" sum 
-					{$$ = buildTree(LessThan, $1 ,$3, NULL);}
-				| rel_expr "<=" sum
-					{$$ = buildTree(LessThanEq, $1 ,$3, NULL);}
-				| rel_expr ">" sum 
+				| rel_expr LesserThan sum 
+					{$$ = buildTree(LesserThan, $1 ,$3, NULL);}
+				| rel_expr LesserThanOrEqual sum
+					{$$ = buildTree(LesserThanOrEqual, $1 ,$3, NULL);}
+				| rel_expr GreaterThan sum 
 					{$$ = buildTree(GreaterThan, $1 ,$3, NULL);}
-				| rel_expr ">=" sum
-					{$$ = buildTree(GreaterThanEq, $1 ,$3, NULL);}
+				| rel_expr GreaterThanOrEqual sum
+					{$$ = buildTree(GreaterThanOrEqual, $1 ,$3, NULL);}
 				;
 
 sum: 			prod 
 					{$$ = $1;}
-				| sum "+" prod 
+				| sum Plus prod 
 					{$$ = buildTree(Plus, $1 ,$3, NULL);}
-				| sum "-" prod
+				| sum Minus prod
 					{$$ = buildTree(Minus, $1 ,$3, NULL);}
 				;
 
 prod: 			factor 
 					{$$ = $1;}
-				| prod "*" factor 
-					{$$ = buildTree(Star, $1 ,$3, NULL);}
-				| prod "/" factor
-					{$$ = buildTree(Slash, $1 ,$3, NULL);}
-				| prod "div" factor
+				| prod Multiply factor 
+					{$$ = buildTree(Multiply, $1 ,$3, NULL);}
+				| prod Divide factor
+					{$$ = buildTree(Divide, $1 ,$3, NULL);}
+				| prod Div factor
 					{$$ = buildTree(Div, $1 ,$3, NULL);} 
-				| prod "mod" factor
+				| prod Mod factor
 					{$$ = buildTree(Mod, $1 ,$3, NULL);}
 				;
 
-factor: 		"+" basic 
+factor: 		Plus basic 
 					{$$ = buildTree(Plus, $2, NULL, NULL)}
-				| "-" basic 
+				| Minus basic 
 					{$$ = buildTree(Minus, $2, NULL, NULL)}
 				| basic
 					{$$ = $1;}
@@ -175,7 +180,7 @@ factor: 		"+" basic
 
 basic: 			ref 
 					{$$ = $1;}
-				| "(" expr ")" 
+				| LeftPar expr RightPar 
 					{$$ = $2;}
 				| IntConst
 					{$$ = buildTree(IntConst, $1);}

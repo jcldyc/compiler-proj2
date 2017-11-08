@@ -31,7 +31,7 @@ char TokName[][13] =
 	"Loop", "Exit", "Bind", "To", "Assert", "When", "If", "Then", "Elsif", "Else",
 	"Put", "Or", "And", "Not", "NotEqual", "Div", "Mod", "Colon", "Definition",
 	"LesserThan", "GreaterThan", "LesserThanOrEqual", "GreaterThanOrEqual", 
-	"Period", "Comma", "Assign", "Plus", "Minus", "Star", "Slash", "Semicolon",
+	"Period", "Comma", "Assign", "Plus", "Minus", "Star", "Divide", "Semicolon",
 	"LeftPar", "RightPar", "<Prog>", "<Notype>", "Field"};
 static int indent = 0;
 void printTree (tree p)

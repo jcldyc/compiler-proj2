@@ -43,7 +43,7 @@ PUT {return Put;}
 OR {return Or;}
 AND {return And;}
 NOT {return Not;}
-NOT"=" {return NotEqual;}
+NOT= {return NotEqual;}
 DIV {return Div;}
 MOD {return Mod;}
 
@@ -56,16 +56,23 @@ MOD {return Mod;}
 "." {return Period;}
 "," {return Comma;}
 
-{L}({L}|{D}|_)* {return Identifier;}
-{D}+ {return IntConst;}
-{D}*\.{D}* {return FloatingPoint;}
-[+-]?{D}*\.?{D}*{L}[+-]?{D} {return FloatExponent;}
+{L}({L}|{D}|_)* {yylval.string = strdup(yytext);
+				return Ident;}
+
+{D}+ {yylval.i = atoi(yytext);
+		return IntConst;}
+
+{D}*\.{D}* {yylval.f = atof(yytext);
+		return FloatingPoint;}
+
+[+-]?{D}*\.?{D}*{L}[+-]?{D} {yylval.f = atof(yytext);
+		return FloatExponent;}
 
 "=" { return Assign; }
 "+" { return Plus; }
 "-" { return Minus; }
-"*" { return Star; }
-"/" { return Slash; }
+"*" { return Multiply; }
+"/" { return Divide; }
 ";" { return Semicolon; }
 "(" { return LeftPar; }
 ")" { return RightPar; }

@@ -15,9 +15,11 @@ int yylex(void);
 #define While 11
 #define Do 12
 #define End 13
+
 #define Begin 14
 #define Loop 15
 #define Exit 16
+
 #define Bind 17
 #define To 18
 #define Assert 19
@@ -44,8 +46,8 @@ int yylex(void);
 #define Assign 40
 #define Plus 41
 #define Minus 42
-#define Star 43
-#define Slash 44
+#define Multiply 43
+#define Divide 44
 #define Semicolon 45
 #define LeftPar 46
 #define RightPar 47
